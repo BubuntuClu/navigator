@@ -16,8 +16,9 @@
 //= require turbolinks
 //= require_tree .
 
-ymaps.ready(init);
-// var myMap;
+$( document ).ready(function() {
+  ymaps.ready(init);
+});
 
 function init () {
   var myMap = new ymaps.Map("map_window", {
@@ -28,24 +29,7 @@ function init () {
   myMap.events.add('click', function (e) {
     var coords = e.get('coords');
     $.ajax({
-      url: window.location.href + "/bd_table" ,
-      data: { latitude: coords[0].toPrecision(6), longitude: coords[1].toPrecision(6) },
-      type: "GET",
-      dataType: "json",
-      success: function(data){
-        build_distance_table(data.building_distance)
-      },
-      error: function(data){
-        console.log(data);
-        alert('smtng went wrong;');
-      }
-    });
-  });
-
-  myMap.events.add('contextmenu', function (e) {
-    var coords = e.get('coords');
-    $.ajax({
-      url: window.location.href + "/ruby_table" ,
+      url: window.location.href + "/show_distance" ,
       data: { latitude: coords[0].toPrecision(6), longitude: coords[1].toPrecision(6) },
       type: "GET",
       dataType: "json",
@@ -60,13 +44,12 @@ function init () {
   });
 }
 
-
 function build_distance_table(building_distances) {
   var tbody = document.getElementsByTagName('TBODY')[0];
   if (tbody)
     tbody.remove();
 
-  var table = document.getElementById("building_table");
+  var table = document.getElementById("distance");
 
   var tableBody = document.createElement('TBODY');
   table.appendChild(tableBody);
@@ -75,14 +58,14 @@ function build_distance_table(building_distances) {
     var tr = document.createElement('TR');
     tableBody.appendChild(tr);
 
-    var td = document.createElement('TD');
-    td.width = '75';
-    td.appendChild(document.createTextNode(building_distances[i].address));
-    tr.appendChild(td);
-
-    td = document.createElement('TD');
-    td.width = '75';
-    td.appendChild(document.createTextNode(building_distances[i].distance));
-    tr.appendChild(td);
+    append_cell_to_row(tr, i + 1);
+    append_cell_to_row(tr, building_distances[i].address);
+    append_cell_to_row(tr, building_distances[i].distance);
   }
+}
+
+function append_cell_to_row(tr, text){
+  var td = document.createElement('TD');
+  td.appendChild(document.createTextNode(text));
+  tr.appendChild(td);
 }

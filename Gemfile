@@ -18,7 +18,6 @@ gem 'jbuilder', '~> 2.5'
 gem 'jquery-rails'
 gem 'geocoder'
 gem 'rb-readline'
-gem 'geo-distance'
 
 
 group :development, :test do
