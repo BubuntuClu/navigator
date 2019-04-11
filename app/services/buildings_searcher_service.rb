@@ -14,11 +14,10 @@ class BuildingsSearcherService
         earth_box(ll_to_earth(:lat, :lon), #{SEARCH_RADIUS}) @> ll_to_earth(latitude, longitude)
           AND earth_distance(ll_to_earth(:lat, :lon), ll_to_earth(latitude, longitude)) < #{SEARCH_RADIUS}
         SQL
-      .order Building.send(:sanitize_sql, "point(#{latitude}, #{longitude}) <@> point(latitude, longitude) :: point")
 
     buildings.map do |building|
       distance = building.distance_from([@latitude, @longitude]).round(3)
       { address: building.address, distance: distance }
-    end
+    end.sort_by { |building| building[:distance] }
   end
 end

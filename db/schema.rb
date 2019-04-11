@@ -10,15 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190409150519) do
+ActiveRecord::Schema.define(version: 20190411055024) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+  enable_extension "cube"
+  enable_extension "earthdistance"
 
   create_table "buildings", force: :cascade do |t|
     t.string "address"
     t.float "latitude", default: 0.0, null: false
     t.float "longitude", default: 0.0, null: false
+    t.index "ll_to_earth(latitude, longitude)", name: "buildings_ll_to_earth_idx", using: :gist
   end
 
 end
